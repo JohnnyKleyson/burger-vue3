@@ -83,14 +83,17 @@
   ],
   "burgers": [
     {
-      "nome": "Thiago",
-      "carne": "Alcatra",
+      "nome": "thiago",
+      "carne": "Maminha",
       "pao": "Italiano Branco",
       "opcionais": [
-        "Bacon"
+        "Bacon",
+        "Salame",
+        "Cebola roxa",
+        "Cheddar"
       ],
-      "status": "Em Analise",
-      "id": 8
+      "status": "Em produção",
+      "id": 1
     }
   ]
 }

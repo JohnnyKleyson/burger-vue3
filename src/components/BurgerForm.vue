@@ -62,7 +62,7 @@
 
 <script>
 import Message from "./Message.vue";
-
+import api from "../service/api";
 export default {
   name: "BurgerForm",
   components: {
@@ -82,15 +82,17 @@ export default {
   },
   methods: {
     async getIngredientes() {
-      const req = await fetch("http://localhost:3000/ingredientes");
-      const data = await req.json();
-
-      this.paes = data.paes;
-      this.carnes = data.carnes;
-      this.opcionaisdata = data.opcionais;
-      console.log(data);
+      api
+        .get("ingredientes")
+        .then((res) => {
+          this.paes = res.data.paes;
+          this.carnes = res.data.carnes;
+          this.opcionaisdata = res.data.opcionais;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
-
     async createBurger(e) {
       e.preventDefault();
       const data = {
@@ -100,22 +102,14 @@ export default {
         opcionais: Array.from(this.opcionais),
         status: "Solicitado",
       };
-      console.log("criou o hamburger", data);
-
-      const dataJson = JSON.stringify(data);
-      const req = await fetch("http://localhost:3000/burgers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: dataJson,
+      
+      api
+      .post("burgers", data)
+      .then((res) => {
+        this.msg = `Pedido N${res.data.id} Realizado com sucesso`;
+        //limpar msg
+        setTimeout(() => (this.msg = ""), 3000);
       });
-      //resposta do backend em forma de const
-      const res = await req.json();
-      console.log(res);
-
-      this.msg = `Pedido N${res.id} Realizado com sucesso`;
-      //limpar msg
-      setTimeout(() => (this.msg = ""), 3000);
-
       this.nome = "";
       this.carne = "";
       this.pao = "";
@@ -179,6 +173,7 @@ select {
 .checkbox-container span {
   margin-left: 6px;
   font-weight: bold;
+  margin-top: 5px;
 }
 
 .submit-btn {

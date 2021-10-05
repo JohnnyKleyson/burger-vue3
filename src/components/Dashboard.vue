@@ -83,6 +83,8 @@
 
 <script>
 import Message from "./Message.vue";
+import api from "../service/api";
+
 export default {
   name: "Dashboard",
   components: {
@@ -98,31 +100,38 @@ export default {
   },
   methods: {
     async getPedidos() {
-      const req = await fetch("http://localhost:3000/burgers");
-
-      const data = await req.json();
-      this.burgers = data;
+      api
+        .get("burgers")
+        .then((res) => {
+          console.log(res);
+          this.burgers = res.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     async getStatus() {
-      const req = await fetch("http://localhost:3000/status");
-
-      const data = await req.json();
-      this.status = data;
+      api
+        .get("status")
+        .then((res) => {
+          this.status = res.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       this.getPedidos();
     },
     async deleteBurger(id) {
-      console.log(id);
-      const req = await fetch(`http://localhost:3000/burgers/${id}`, {
-        method: "DELETE",
+      api
+      .delete(`/burgers/${id}`)
+      .then(() => {
+        this.msg = `Pedido Removido com sucesso`;
+        setTimeout(() => (this.msg = ""), 3000);
       });
-      const res = await req.json();
-      this.msg = `Pedido Removido com sucesso`;
-      setTimeout(() => (this.msg = ""), 3000);
       this.getPedidos();
     },
     async updateBurger(event, id) {
       const option = event.target.value;
-
       const dataJson = JSON.stringify({ status: option });
 
       const req = await fetch(`http://localhost:3000/burgers/${id}`, {
